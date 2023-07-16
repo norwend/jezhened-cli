@@ -100,7 +100,7 @@ void Weekbook::sortActivities() {
 	std::sort(activities_.begin(), activities_.end(),
 			  [] (Activity first, Activity last) {
 				  auto first_date = first.getDate();
-				  auto last_date = last_date;
+				  auto last_date = last.getDate();
 				  if (first_date.tm_year < last_date.tm_year)
 					  return true;
 				  if (first_date.tm_year > last_date.tm_year)
@@ -118,7 +118,7 @@ void Weekbook::sortActivities() {
 				  if (first_date.tm_hour > last_date.tm_hour)
 					  return false;
 				  return first_date.tm_min < last_date.tm_min;
-			  })
+			  });
 }
 
 void Weekbook::addActivity() {
@@ -134,7 +134,7 @@ void Weekbook::addActivity() {
 	std::cin >> date.tm_min;
 	std::mktime(&date);
 	ndrprint("Enter the activity name: ");
-	std::cin >> iiact_name;
+	std::cin >> act_name;
 	ndrprint("Enter the activity description: ");
 	std::cin >> act_desc;
 	activities_.push_back(Activity(act_name, act_desc, date));
@@ -149,16 +149,16 @@ int main () {
 		std::cin >> action;
 		switch (--action) {
 		case UserInput::ShowWeekActivities:
-			weekbook->showWeekActivities();
+			// weekbook->showWeekActivities();
 			break;
 		case UserInput::AddActivity:
 			weekbook->addActivity();
 			break;
 		case UserInput::RemoveActivity:
-			weekbook->removeActivity();
+			// weekbook->removeActivity();
 			break;
 		case UserInput::ShowMonthActivities:
-			weekbook->showMonthActivities();
+			// weekbook->showMonthActivities();
 			break;
 		default:
 			break;
