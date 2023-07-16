@@ -40,8 +40,15 @@ public:
 	Activity(const std::string& name,
 			 const std::string& description,
 			 const std::tm& date);
-	~Activity();
+	~Activity() = default;
 };
+
+Activity::Activity(const std::string& name,
+				   const std::string& description,
+				   const std::tm& date)
+	: name_(name), description_(description), date_(date) {
+	
+}
 
 std::tm Activity::getDate() {
 	return this->date_;
