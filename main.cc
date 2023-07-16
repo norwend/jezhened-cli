@@ -1,7 +1,11 @@
 #include <iostream>
-#include <chrono>
 #include <ctime>
 #include <string>
+#include <algorithm>
+
+void ndrprint(std::string str) {
+	std::cout << str << std::endl;
+}
 
 enum UserInput {
 	ShowWeekActivities,
@@ -16,11 +20,13 @@ private:
 	std::string name_;
 	std::string description_;
 	int priority_;
+	bool state_;
 public:
 	std::tm getDate();
 	std::string getName();
 	std::string getDescription();
 	int getPriority();
+	bool getState();
 
 	std::string getFormattedDate(std::string format);
 
@@ -28,6 +34,7 @@ public:
 	void setName(const std::string& new_name);
 	void setDescription(const std::string& new_description);
 	void setPriority(int new_priority);
+	void setState(bool new_state);
 	
 	void printActivity();
 	Activity(const std::string& name,
@@ -52,6 +59,10 @@ int Activity::getPriority() {
 	return this->priority_;
 }
 
+bool Activity::getState() {
+	return this->state_;
+}
+
 void Activity::setDate(const std::tm& new_date) {
 	this->date_ = new_date;
 }
@@ -68,20 +79,46 @@ void Activity::setPriority(int new_priority) {
 	this->priority_ = new_priority;
 }
 
+void Activity::setState(bool new_state) {
+	this->state_ = new_state;
+}
+
 class Weekbook {
 private:
 	std::vector<Activity> activities_;
+	void sortActivities();
 public:
 	void addActivity();
-	void editActivity();
-	void removeActivity();
-	void showWeekActivities();
-	void showMonthActivities();
-	void showYearActivities();
+// 	void editActivity();
+// 	void removeActivity();
+// 	void showWeekActivities();
+// 	void showMonthActivities();
+// 	void showYearActivities();
 };
 
-void ndrprint(std::string str) {
-	std::cout << str << std::endl;
+void Weekbook::sortActivities() {
+	std::sort(activities_.begin(), activities_.end(),
+			  [] (Activity first, Activity last) {
+				  auto first_date = first.getDate();
+				  auto last_date = last_date;
+				  if (first_date.tm_year < last_date.tm_year)
+					  return true;
+				  if (first_date.tm_year > last_date.tm_year)
+					  return false;
+				  if (first_date.tm_mon < last_date.tm_mon)
+					  return true;
+				  if (first_date.tm_mon > last_date.tm_mon)
+					  return false;
+				  if (first_date.tm_mday < last_date.tm_mday)
+					  return true;
+				  if (first_date.tm_mday > last_date.tm_mday)
+					  return false;
+				  if (first_date.tm_hour < last_date.tm_hour)
+					  return true;
+				  if (first_date.tm_hour > last_date.tm_hour)
+					  return false;
+				  return first_date.tm_min < last_date.tm_min;
+			  })
 }
 
 void Weekbook::addActivity() {
@@ -97,11 +134,11 @@ void Weekbook::addActivity() {
 	std::cin >> date.tm_min;
 	std::mktime(&date);
 	ndrprint("Enter the activity name: ");
-	std::cin >> act_name;
+	std::cin >> iiact_name;
 	ndrprint("Enter the activity description: ");
 	std::cin >> act_desc;
 	activities_.push_back(Activity(act_name, act_desc, date));
-	
+	this->sortActivities();
 }
 
 int main () {
