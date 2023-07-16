@@ -1,7 +1,9 @@
 #include <iostream>
 #include <ctime>
 #include <string>
+#include <vector>
 #include <algorithm>
+#include <cmath>
 
 void ndrprint(std::string str) {
 	std::cout << str << std::endl;
@@ -27,8 +29,6 @@ public:
 	std::string getDescription();
 	int getPriority();
 	bool getState();
-
-	std::string getFormattedDate(std::string format);
 
 	void setDate(const std::tm& new_date);
 	void setName(const std::string& new_name);
@@ -90,6 +90,22 @@ void Activity::setState(bool new_state) {
 	this->state_ = new_state;
 }
 
+void Activity::printActivity() {
+	char date_string[std::size("dd.mm.yyyy hh:mm")];
+	std::tm activity_date = this->getDate();
+	size_t date_get_result = std::strftime(date_string,
+										   std::size(date_string),
+										   "%d.%m.%Y %R",
+										   &activity_date);
+	// "%R" is just an abbreviation for "%H:%M"
+	if (date_get_result == 0) {
+		ndrprint("Activity get failed");
+	}
+	std::cout << "Name: " << this->name_
+			  << "\nDate: " << date_string
+			  << "\nDescription: " << this->description_ << std::endl;
+}
+
 class Weekbook {
 private:
 	std::vector<Activity> activities_;
@@ -98,9 +114,10 @@ public:
 	void addActivity();
 // 	void editActivity();
 // 	void removeActivity();
-// 	void showWeekActivities();
+	void showWeekActivities();
 // 	void showMonthActivities();
 // 	void showYearActivities();
+//  void showAllActivities();
 };
 
 void Weekbook::sortActivities() {
@@ -130,16 +147,43 @@ void Weekbook::sortActivities() {
 
 void Weekbook::addActivity() {
 	std::tm date{};
-	int year;
-	std::string act_name;
-	std::string act_desc;
-	std::cin >> date.tm_mday;
-	std::cin >> date.tm_mon;
-	std::cin >> year;
-	date.tm_year = year - 1900;
-	std::cin >> date.tm_hour;
-	std::cin >> date.tm_min;
-	std::mktime(&date);
+	int day, month, year, hour, minute;
+	std::string act_name, act_desc;
+	while (std::cin >> day) {
+		if (day > 0 && day < 32) {
+			date.tm_mday = day;
+			break;
+		}
+		else std::cout << "Try again.\n";
+	}
+	while (std::cin >> month) {
+		if (month > 0 && month < 13) {
+			date.tm_mon = month;
+			break;
+		}
+		else std::cout << "Try again.\n";
+	}
+	while (std::cin >> year) {
+		if (year > 0 && year < 10000) {
+			date.tm_year = year - 1900;
+			break;
+		}
+		else std::cout << "Try again.\n";
+	}
+	while (std::cin >> hour) {
+		if (hour >= 0 && hour < 24) {
+			date.tm_hour = hour;
+			break;
+		}
+		else std::cout << "Try again.\n";
+	}
+	while (std::cin >> minute) {
+		if (minute >= 0 && minute < 60) {
+			date.tm_min = minute;
+			break;
+		}
+		else std::cout << "Try again.\n";
+	}
 	ndrprint("Enter the activity name: ");
 	std::cin >> act_name;
 	ndrprint("Enter the activity description: ");
@@ -148,17 +192,34 @@ void Weekbook::addActivity() {
 	this->sortActivities();
 }
 
+void Weekbook::showWeekActivities() {
+	std::time_t current_time = std::time(nullptr);
+	const std::time_t MILLIS_IN_WEEK = 604800000;
+	for (auto& activity : this->activities_) {
+		std::tm activity_date = activity.getDate();
+		std::time_t activity_time = std::mktime(&activity_date);
+		if (std::abs(activity_time - current_time) > MILLIS_IN_WEEK)
+			break;
+		activity.printActivity();
+	}
+}
+
 int main () {
 	std::cout << "Hello, world\n";
 	Weekbook* weekbook = new Weekbook;
 	while (true) {
+		std::cout << "Choose action...\n"
+				  << "1. Show week activities.\n"
+				  << "2. Add an activity.\n";
 		int action;
 		std::cin >> action;
 		switch (--action) {
 		case UserInput::ShowWeekActivities:
-			// weekbook->showWeekActivities();
+			weekbook->showWeekActivities();
 			break;
 		case UserInput::AddActivity:
+			ndrprint("Enter the day, month, year, hour and minute, "
+					 "separated by spaces:");
 			weekbook->addActivity();
 			break;
 		case UserInput::RemoveActivity:
