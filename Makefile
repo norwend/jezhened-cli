@@ -1,2 +1,2 @@
 all:
-	g++ main.cc -o jezhened-cli
+	g++ main.cc -o jezhened-cli -std=c++17
