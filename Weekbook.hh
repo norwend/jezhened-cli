@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <algorithm>
-#include <cmath>
 
 #include "Activity.hh"
 
@@ -14,8 +13,8 @@ public:
 	void addActivity(const Activity& activity);
 // 	void editActivity();
 // 	void removeActivity();
-	void showWeekActivities();
-// 	void showMonthActivities();
-// 	void showYearActivities();
-//  void showAllActivities();
+	void showActivities();
 };
+
+std::tm enterDate();
+
