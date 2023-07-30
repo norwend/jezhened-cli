@@ -17,14 +17,6 @@ std::string Activity::getDescription() {
 	return this->description_;
 }
 
-int Activity::getPriority() {
-	return this->priority_;
-}
-
-bool Activity::getState() {
-	return this->state_;
-}
-
 void Activity::setDate(const std::tm& new_date) {
 	this->date_ = new_date;
 }
@@ -37,17 +29,9 @@ void Activity::setDescription(const std::string& new_description) {
 	this->description_ = new_description;
 }
 
-void Activity::setPriority(int new_priority) {
-	this->priority_ = new_priority;
-}
-
-void Activity::setState(bool new_state) {
-	this->state_ = new_state;
-}
-
 void Activity::printActivity() {
 	char date_string[std::size("dd.mm.yyyy hh:mm")];
-	std::tm activity_date = this->getDate();
+	std::tm activity_date = this->date();
 	size_t date_get_result = std::strftime(date_string,
 										   std::size(date_string),
 										   "%d.%m.%Y %R",
