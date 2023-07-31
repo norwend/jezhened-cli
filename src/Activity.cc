@@ -31,7 +31,7 @@ void Activity::setDescription(const std::string& new_description) {
 
 void Activity::printActivity() {
 	char date_string[std::size("dd.mm.yyyy hh:mm")];
-	std::tm activity_date = this->date();
+	std::tm activity_date = this->date_;
 	size_t date_get_result = std::strftime(date_string,
 										   std::size(date_string),
 										   "%d.%m.%Y %R",
