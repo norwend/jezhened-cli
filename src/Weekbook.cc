@@ -1,10 +1,5 @@
 #include "Weekbook.hh"
 
-const std::time_t NDR_SECONDS_IN_WEEK = 604800;
-const std::time_t NDR_SECONDS_IN_DAY = 86400;
-const std::time_t NDR_SECONDS_IN_MONTH = 2592000;
-const std::time_t NDR_SECONDS_IN_YEAR = 946080000;
-
 Date enterDate() {
 	std::cin.clear();
 	std::cin.sync();
