@@ -10,18 +10,6 @@ Date enterDate() {
 	return Date(date_string);
 }
 
-void Weekbook::sortActivities() {
-	std::sort(activities_.begin(), activities_.end(),
-			  [] (Activity first, Activity last) {
-				  return first.getDate() < last.getDate();
-			  });
-}
-
-void Weekbook::addActivity(const Activity& activity) {
-	activities_.push_back(activity);
-	this->sortActivities();
-}
-
 std::chrono::minutes periodChooser() {
 	using namespace std::chrono;
 	
@@ -49,6 +37,18 @@ std::chrono::minutes periodChooser() {
 	default:
 		return duration_cast<minutes>(days(-1));
 	}
+}
+
+void Weekbook::sortActivities() {
+	std::sort(activities_.begin(), activities_.end(),
+			  [] (Activity first, Activity last) {
+				  return first.getDate() < last.getDate();
+			  });
+}
+
+void Weekbook::addActivity(const Activity& activity) {
+	activities_.push_back(activity);
+	this->sortActivities();
 }
 
 void Weekbook::showActivities() {

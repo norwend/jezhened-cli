@@ -18,3 +18,4 @@ public:
 };
 
 Date enterDate();
+std::chrono::minutes periodChooser();
