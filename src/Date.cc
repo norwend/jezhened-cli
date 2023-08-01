@@ -1,6 +1,6 @@
 #include "Date.hh"
 
-std::string Date::to_str() {
+std::string Date::toString() {
 	return std::format("{:%H:%M %d.%m.%Y}", time_point_); // TODO: not using a defined constant :(
 }
 

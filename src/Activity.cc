@@ -31,6 +31,6 @@ void Activity::setDescription(const std::string& new_description) {
 
 void Activity::printActivity() {
 	std::cout << "Name: " << this->name_
-			  << "\nDate: " << this->date_.to_str()
+			  << "\nDate: " << this->date_.toString()
 			  << "\nDescription: " << this->description_ << std::endl;
 }

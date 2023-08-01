@@ -3,7 +3,8 @@
 Date enterDate() {
 	std::cin.clear();
 	std::cin.sync();
-	std::cout << "Enter the date in format HH:MM DD.MM.YYYY: \n";
+	std::cout << "Enter the date in format HH:MM DD.MM.YYYY: \n"
+			  << "> ";
 	std::string date_string;
 	std::getline(std::cin, date_string);
 	return Date(date_string);

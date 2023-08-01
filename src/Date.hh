@@ -25,7 +25,7 @@ public:
 	}
 	void setTimePoint(const std::chrono::time_point<std::chrono::system_clock>& new_time_point);
 
-	std::string to_str();
+	std::string toString();
 
 	Date() = default;
 	Date(const std::string& date_string);
