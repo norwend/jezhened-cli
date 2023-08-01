@@ -7,7 +7,7 @@ enum UserInput {
 	ShowActivities,
 	AddActivity,
 	RemoveActivity,
-	ShowMonthActivities,
+	Quit,
 };
 
 int main () {
@@ -16,6 +16,8 @@ int main () {
 		std::cout << "Choose action...\n"
 				  << "1. Show activities.\n"
 				  << "2. Add an activity.\n"
+				  << "3. Edit an activity.\n"
+				  << "4. Quit.\n"
 				  << "> ";
 		int action;
 		std::cin >> action;
@@ -23,20 +25,25 @@ int main () {
 		switch (--action) {
 		case UserInput::ShowActivities:
 			weekbook->showActivities();
-			break;
+			continue;
 		case UserInput::AddActivity:
-			std::cout << "Enter the activity name: " << std::endl;
+			std::cout << "Enter the activity name:\n"
+					  << "> ";
 			std::cin >> act_name;
-			std::cout << "Enter the activity description: " << std::endl;
+			std::cout << "Enter the activity description:\n"
+					  << "> ";
 			std::cin >> act_desc;
 			weekbook->addActivity(Activity(act_name, act_desc, enterDate()));
-			break;
+			continue;
 		case UserInput::RemoveActivity:
 			// weekbook->removeActivity();
+			continue;
+		case UserInput::Quit:
 			break;
 		default:
-			break;
+			continue;
 		}
+		break;
 	}
 	return 0;
 }
