@@ -15,7 +15,8 @@ int main () {
 	while (true) {
 		std::cout << "Choose action...\n"
 				  << "1. Show activities.\n"
-				  << "2. Add an activity.\n";
+				  << "2. Add an activity.\n"
+				  << "> ";
 		int action;
 		std::cin >> action;
 		std::string act_name, act_desc;
