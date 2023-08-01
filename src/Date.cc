@@ -1,5 +1,9 @@
 #include "Date.hh"
 
+std::string Date::to_str() {
+	return std::format("{:%H:%M %d.%m.%Y}", time_point_); // TODO: not using a defined constant :(
+}
+
 void Date::setTimePoint(const std::chrono::time_point<std::chrono::system_clock>& new_time_point) {
 	this->time_point_ = new_time_point;
 	this->updateDate();
@@ -17,7 +21,11 @@ void Date::updateDate() {
 }
 
 Date::Date(const std::string& date_string) {
-	date_string >> std::chrono::parse(JEZHENED_DATE_FORMAT, time_point_);
+	// date_string >> std::chrono::parse(JEZHENED_DATE_FORMAT, time_point_); --- C++20 FULL SUPPORT WAITING ROOM ---
+	std::tm tm = {};
+	std::stringstream ss { date_string };
+	ss >> std::get_time(&tm, JEZHENED_DATE_FORMAT.c_str());
+	this->time_point_ = std::chrono::system_clock::from_time_t(std::mktime(&tm));
 	this->updateDate();
 }
 

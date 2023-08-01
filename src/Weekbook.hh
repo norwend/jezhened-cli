@@ -4,6 +4,7 @@
 #include <algorithm>
 
 #include "Activity.hh"
+#include "Date.hh"
 
 class Weekbook {
 private:
@@ -16,5 +17,4 @@ public:
 	void showActivities();
 };
 
-std::tm enterDate();
-
+Date enterDate();

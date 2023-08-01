@@ -2,10 +2,10 @@
 
 Activity::Activity(const std::string& name,
 				   const std::string& description,
-				   const std::tm& date)
+				   const Date& date)
 	: name_(name), description_(description), date_(date) { }
 
-std::tm Activity::getDate() {
+Date Activity::getDate() {
 	return this->date_;
 }
 
@@ -17,7 +17,7 @@ std::string Activity::getDescription() {
 	return this->description_;
 }
 
-void Activity::setDate(const std::tm& new_date) {
+void Activity::setDate(const Date& new_date) {
 	this->date_ = new_date;
 }
 
@@ -30,17 +30,7 @@ void Activity::setDescription(const std::string& new_description) {
 }
 
 void Activity::printActivity() {
-	char date_string[std::size("dd.mm.yyyy hh:mm")];
-	std::tm activity_date = this->date_;
-	size_t date_get_result = std::strftime(date_string,
-										   std::size(date_string),
-										   "%d.%m.%Y %R",
-										   &activity_date);
-	// "%R" is just an abbreviation for "%H:%M"
-	if (date_get_result == 0) {
-		std::cout << "Activity get failed" << std::endl;
-	}
 	std::cout << "Name: " << this->name_
-			  << "\nDate: " << date_string
+			  << "\nDate: " << this->date_.to_str()
 			  << "\nDescription: " << this->description_ << std::endl;
 }

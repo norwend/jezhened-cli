@@ -14,7 +14,7 @@ int main () {
 	Weekbook* weekbook = new Weekbook;
 	while (true) {
 		std::cout << "Choose action...\n"
-				  << "1. Show week activities.\n"
+				  << "1. Show activities.\n"
 				  << "2. Add an activity.\n";
 		int action;
 		std::cin >> action;

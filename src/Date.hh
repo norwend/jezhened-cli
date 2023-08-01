@@ -1,10 +1,11 @@
 #pragma once
 
 #include <chrono>
+#include <format>
 #include <string>
 #include <cmath>
 
-const std::string JEZHENED_DATE_FORMAT = "%H:%M %d.%m.%Y";
+constexpr std::string JEZHENED_DATE_FORMAT = "%H:%M %d.%m.%Y";
 
 class Date {
 private:
@@ -19,15 +20,16 @@ public:
 	uint32_t year() { return this->year_; }
 
 	// create setters!
+	std::chrono::time_point<std::chrono::system_clock> getTimePoint() {
+		return this->time_point_;
+	}
 	void setTimePoint(const std::chrono::time_point<std::chrono::system_clock>& new_time_point);
+
+	std::string to_str();
 
 	Date() = default;
 	Date(const std::string& date_string);
 	Date(std::tm date);
-	Date(const Date& other) :
-		time_point_(other.time_point_), hour_(other.hour_),
-		minute_(other.minute_), day_(other.day_), month_(other.month_),
-		year_(other.year_) {}
 	~Date() = default;
 
 	friend bool operator<(const Date& lhs, const Date& rhs);

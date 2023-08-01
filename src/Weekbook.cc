@@ -5,72 +5,19 @@ const std::time_t NDR_SECONDS_IN_DAY = 86400;
 const std::time_t NDR_SECONDS_IN_MONTH = 2592000;
 const std::time_t NDR_SECONDS_IN_YEAR = 946080000;
 
-std::tm enterDate() {
-	std::tm date;
-	int day, month, year, hour, minute;
-	std::string act_name, act_desc;
-	std::cout << "Enter the day, month, year, hour and minute, "
-			  << "separated by spaces:" << std::endl;
-	while (std::cin >> day) {
-		if (day > 0 && day < 32) {
-			date.tm_mday = day;
-			break;
-		}
-		else std::cout << "Try again.\n";
-	}
-	while (std::cin >> month) {
-		if (month > 0 && month < 13) {
-			date.tm_mon = --month;
-			break;
-		}
-		else std::cout << "Try again.\n";
-	}
-	while (std::cin >> year) {
-		if (year > 0 && year < 10000) {
-			date.tm_year = year - 1900;
-			break;
-		}
-		else std::cout << "Try again.\n";
-	}
-	while (std::cin >> hour) {
-		if (hour >= 0 && hour < 24) {
-			date.tm_hour = hour;
-			break;
-		}
-		else std::cout << "Try again.\n";
-	}
-	while (std::cin >> minute) {
-		if (minute >= 0 && minute < 60) {
-			date.tm_min = minute;
-			break;
-		}
-		else std::cout << "Try again.\n";
-	}
-	return date;
+Date enterDate() {
+	std::cin.clear();
+	std::cin.sync();
+	std::cout << "Enter the date in format HH:MM DD.MM.YYYY: \n";
+	std::string date_string;
+	std::getline(std::cin, date_string);
+	return Date(date_string);
 }
 
 void Weekbook::sortActivities() {
 	std::sort(activities_.begin(), activities_.end(),
 			  [] (Activity first, Activity last) {
-				  auto first_date = first.getDate();
-				  auto last_date = last.getDate();
-				  if (first_date.tm_year < last_date.tm_year)
-					  return true;
-				  if (first_date.tm_year > last_date.tm_year)
-					  return false;
-				  if (first_date.tm_mon < last_date.tm_mon)
-					  return true;
-				  if (first_date.tm_mon > last_date.tm_mon)
-					  return false;
-				  if (first_date.tm_mday < last_date.tm_mday)
-					  return true;
-				  if (first_date.tm_mday > last_date.tm_mday)
-					  return false;
-				  if (first_date.tm_hour < last_date.tm_hour)
-					  return true;
-				  if (first_date.tm_hour > last_date.tm_hour)
-					  return false;
-				  return first_date.tm_min < last_date.tm_min;
+				  return first.getDate() < last.getDate();
 			  });
 }
 
@@ -80,8 +27,9 @@ void Weekbook::addActivity(const Activity& activity) {
 }
 
 void Weekbook::showActivities() {
-	std::time_t current_date_seconds = std::time(nullptr);
-	std::time_t period = 0;
+	using namespace std::chrono;
+	
+	auto current_time = system_clock::now();
 	std::cout << "Choose the period you want to see:\n"
 			  << "1. A day.\n"
 			  << "2. A week.\n"
@@ -90,24 +38,24 @@ void Weekbook::showActivities() {
 			  << "5. All activities.\n"
 			  << "6. A custom period (specify the day and the period)."
 			  << std::endl;
+	std::chrono::minutes period;
 	int action;
 	bool show_all = false;
 	bool custom_period = false;
-	std::tm custom_date;
-	std::time_t custom_date_seconds = 0;
+	Date custom_date {};
 	std::cin >> action;
 	switch (--action) {
 	case 0:
-		period = NDR_SECONDS_IN_DAY;
+		period = duration_cast<minutes>(days(1));
 		break;
 	case 1:
-		period = NDR_SECONDS_IN_WEEK;
+		period = duration_cast<minutes>(days(7));
 		break;
 	case 2:
-		period = NDR_SECONDS_IN_MONTH;
+		period = duration_cast<minutes>(days(30));
 		break;
 	case 3:
-		period = NDR_SECONDS_IN_YEAR;
+		period = duration_cast<minutes>(days(365));
 		break;
 	case 4:
 		show_all = true;
@@ -115,26 +63,25 @@ void Weekbook::showActivities() {
 	case 5:
 		custom_period = true;
 		custom_date = enterDate();
-		custom_date_seconds = std::mktime(&custom_date);
 		std::cout << "Choose the period you want to see:\n"
 			  << "1. A day.\n"
 			  << "2. A week.\n"
 			  << "3. A month.\n"
-			  << "4. A year.\n"
+			  << "4. A year."
 			  << std::endl;
 		std::cin >> action;
 		switch (--action) {
 		case 0:
-			period = NDR_SECONDS_IN_DAY;
+			period = duration_cast<minutes>(days(1));
 			break;
 		case 1:
-			period = NDR_SECONDS_IN_WEEK;
+			period = duration_cast<minutes>(days(7));
 			break;
 		case 2:
-			period = NDR_SECONDS_IN_WEEK;
+			period = duration_cast<minutes>(days(30));
 			break;
 		case 3:
-			period = NDR_SECONDS_IN_YEAR;
+			period = duration_cast<minutes>(days(365));
 			break;
 		default:
 			break;
@@ -144,14 +91,19 @@ void Weekbook::showActivities() {
 		break;
 	}
 	for (auto& activity : this->activities_) {
-		std::tm activity_date = activity.getDate();
-		std::time_t activity_date_seconds = std::mktime(&activity_date);
-		if (activity_date_seconds - current_date_seconds > period
+		auto activity_duration =
+			duration_cast<minutes>(activity.getDate().getTimePoint()
+								   - current_time);
+		if ((activity_duration > period || activity_duration.count() < 0)
 			&& !show_all && !custom_period)
 			break;
-		if (custom_period == true
-			&& (custom_date_seconds - activity_date_seconds) > period)
-			continue;
+		if (custom_period == true) {
+			auto custom_duration =
+				duration_cast<minutes>(activity.getDate().getTimePoint()
+									   - custom_date.getTimePoint());
+			if (custom_duration > period || custom_duration.count() < 0)
+				continue;
+		}
 		activity.printActivity();
 	}
 }
