@@ -83,6 +83,9 @@ void Weekbook::showActivities() {
 		break;
 	}
 	for (auto& activity : this->activities_) {
+
+		/* TODO: REWORK THIS ALGORITHM! IT SHOULD *NOT* DEPEND ON SORTED ACTIVITIES! */
+
 		auto activity_duration =
 			duration_cast<minutes>(activity.getDate().getTimePoint()
 								   - current_time);

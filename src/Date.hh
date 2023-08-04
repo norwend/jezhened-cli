@@ -6,20 +6,18 @@
 #include <cmath>
 
 constexpr std::string JEZHENED_DATE_FORMAT = "%H:%M %d.%m.%Y";
+constexpr char JEZHENED_OUTPUT_DATE_FORMAT[] = "{:%H:%M %d.%m.%Y}";
 
 class Date {
 private:
 	std::chrono::time_point<std::chrono::system_clock> time_point_;
-	uint32_t hour_, minute_, day_, month_, year_;
-	void updateDate();
 public:
-	uint32_t hour() { return this->hour_; }
-	uint32_t minute() { return this->minute_; }
-	uint32_t day() { return this->day_; }
-	uint32_t month() { return this->month_; }
-	uint32_t year() { return this->year_; }
+	uint32_t hour();
+	uint32_t minute();
+	uint32_t day();
+	uint32_t month();
+	uint32_t year();
 
-	// create setters!
 	std::chrono::time_point<std::chrono::system_clock> getTimePoint() {
 		return this->time_point_;
 	}
